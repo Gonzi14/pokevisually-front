@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { getPokemonFromAPI } from "../../api/getPokemonFromAPI";
-import { PokemonCard } from "../../components/PokemonCard";
+import { PokemonCard } from "../../components/PokemonCard/PokemonCard";
 import "./Home.css";
 
-const CANT_POKEMON_FIRST_GEN = 151;
+const CANT_POKEMON_FIRST_GEN = 1006;
 
 export const Home = () => {
   const [currentPokemon, setCurrentPokemon] = useState(null);
