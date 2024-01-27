@@ -7,7 +7,7 @@ export const PokemonCard = ({ pokemon }) => {
         <h2>{pokemon.name}</h2>
         <img className="pokemonImg" src={pokemon.spriteFront}></img>
         <img className="pokemonImg" src={pokemon.spriteBack}></img>
-        <h5>Tipos</h5>
+        <br />
         <img
           className="typeImg"
           src={`/img/${pokemon.type1}.png`}

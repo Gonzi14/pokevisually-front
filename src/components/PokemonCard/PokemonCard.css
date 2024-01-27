@@ -2,13 +2,13 @@ h2 {
   font-size: 50px;
   color: var(--text-color);
   text-decoration: 2px solid underline;
+  margin: 10px;
 }
 h5 {
   color: var(--text-color);
   margin: 10px;
 }
-.pokemonImg {
-}
+
 .typeImg {
   margin: 10px;
 }
