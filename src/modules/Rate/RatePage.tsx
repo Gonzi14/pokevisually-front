@@ -1,15 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { Button } from '@ui/button'
 import { GENERATIONS } from '@/shared/constants'
 import { Generation, Pokemon } from '@shared/types'
 import { getRandomNumberBetweenValues } from '@/shared/utils'
 import { getPokemonFromAPI } from '@shared/api/getPokemonFromAPI'
 
-import { NextButton } from './components/NextButton/NextButton'
-import { PokemonCard } from './components/PokemonCard/PokemonCard'
-
-export default function Home (): JSX.Element {
+export default function RatePage (): JSX.Element {
   const [currentGeneration, setCurrentGeneration] = useState<Generation>(
     GENERATIONS[0]
   )
@@ -52,32 +48,35 @@ export default function Home (): JSX.Element {
   if (currentPokemon == null) {
     return <div>Cargando Contenido...</div>
   }
-  return (
-    <div>
-      <Button>Button</Button>
-      <NextButton
-        icon={<span>{currentGeneration.id}</span>}
-        handleClick={() => {
-          setCurrentGeneration(GENERATIONS[currentGeneration.id])
-        }}
-      />
-      <PokemonCard pokemon={currentPokemon} />
-      <div>
-        {/* <NextButton
-          handleClick={async () => {
-            const pokemon = await getPokemonFromAPI(getPreviousSeenPokemon())
-            setCurrentPokemon(pokemon)
-          }}
-        />
-        <NextButton
-          handleClick={() => {
-            const currentPosition = seenPokemon.indexOf(
-              currentPokemon.pokedexNumber
-            )
-            updatePokemon(seenPokemon.at(currentPosition + 1))
-          }}
-        /> */}
-      </div>
-    </div>
-  )
+
+  return <main>Rate</main>
+
+  // return (
+  //   <div>
+  //     <Button>Button</Button>
+  //     <NextButton
+  //       icon={<span>{currentGeneration.id}</span>}
+  //       handleClick={() => {
+  //         setCurrentGeneration(GENERATIONS[currentGeneration.id])
+  //       }}
+  //     />
+  //     <PokemonCard pokemon={currentPokemon} />
+  //     <div>
+  //       {/* <NextButton
+  //         handleClick={async () => {
+  //           const pokemon = await getPokemonFromAPI(getPreviousSeenPokemon())
+  //           setCurrentPokemon(pokemon)
+  //         }}
+  //       />
+  //       <NextButton
+  //         handleClick={() => {
+  //           const currentPosition = seenPokemon.indexOf(
+  //             currentPokemon.pokedexNumber
+  //           )
+  //           updatePokemon(seenPokemon.at(currentPosition + 1))
+  //         }}
+  //       /> */}
+  //     </div>
+  //   </div>
+  // )
 }
