@@ -3,14 +3,11 @@ import { useEffect, useState } from 'react'
 import { Button } from '@ui/button'
 import { GENERATIONS } from '@/shared/constants'
 import { Generation, Pokemon } from '@shared/types'
+import { getRandomNumberBetweenValues } from '@/shared/utils'
 import { getPokemonFromAPI } from '@shared/api/getPokemonFromAPI'
 
 import { NextButton } from './components/NextButton/NextButton'
 import { PokemonCard } from './components/PokemonCard/PokemonCard'
-
-const getRandomNumber = (min: number, max: number): number => {
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
 
 export default function Home (): JSX.Element {
   const [currentGeneration, setCurrentGeneration] = useState<Generation>(
@@ -37,7 +34,7 @@ export default function Home (): JSX.Element {
 
   const getNewPokedexNumber = (): number => {
     while (true) {
-      const newPokedexNumber = getRandomNumber(
+      const newPokedexNumber = getRandomNumberBetweenValues(
         currentGeneration.pokedexMin,
         currentGeneration.pokedexMax
       )
