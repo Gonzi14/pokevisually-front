@@ -1,0 +1,37 @@
+h2 {
+  font-size: 50px;
+  color: var(--text-color);
+  text-decoration: 2px solid underline;
+  margin: 10px;
+}
+h5 {
+  color: var(--text-color);
+  margin: 10px;
+}
+
+.typeImg {
+  margin: 10px;
+}
+.card-container {
+  animation: dropIn 1s ease forwards;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  text-align: center;
+}
+.card {
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+@keyframes dropIn {
+  from {
+    transform: translateY(-500px);
+  }
+  to {
+    transform: translateY(0px);
+  }
+}
