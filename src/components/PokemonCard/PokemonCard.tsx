@@ -1,6 +1,7 @@
+import { Pokemon } from "../../types";
 import "./PokemonCard.css";
 
-export const PokemonCard = ({ pokemon }) => {
+export const PokemonCard: React.FC<{ pokemon: Pokemon }> = ({ pokemon }) => {
   return (
     <div className="card-container">
       <div className="card">
@@ -17,7 +18,7 @@ export const PokemonCard = ({ pokemon }) => {
         <img
           className="typeImg"
           src={`/img/${pokemon.type2}.png`}
-          onError={() => this.remove()}
+          onError={(e) => e.currentTarget.remove()}
         />
       </div>
     </div>

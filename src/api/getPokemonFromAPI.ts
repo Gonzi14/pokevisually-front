@@ -1,4 +1,6 @@
-export async function getPokemonFromAPI(index) {
+import { Pokemon } from "../types";
+
+export async function getPokemonFromAPI(index: number): Promise<Pokemon> {
   const res = await fetch(`http://pokeapi.co/api/v2/pokemon/${index}`);
   const resJSON = await res.json();
 
