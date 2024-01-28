@@ -17,7 +17,7 @@ export const PokemonCard = ({ pokemon }) => {
         <img
           className="typeImg"
           src={`/img/${pokemon.type2}.png`}
-          onError="this.remove()"
+          onError={() => this.remove()}
         />
       </div>
     </div>
