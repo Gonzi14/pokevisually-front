@@ -5,6 +5,7 @@ export async function getPokemonFromAPI(index) {
   const { species, sprites, types } = resJSON;
 
   return {
+    pokedexNumber: index,
     name: species.name,
     spriteFront: sprites.front_default,
     spriteBack: sprites.back_default,
