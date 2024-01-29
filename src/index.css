@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+#root {
+  min-height: 100svh;
+  min-height: 100vh;
+}
+
 @layer base {
   :root {
     --background: 224 71.4% 4.1%;
