@@ -1,12 +1,12 @@
 import { Outlet } from 'react-router-dom'
 
+import Header from './components/Header'
+
 export default function AppLayout (): JSX.Element {
   return (
-    <>
-      <header>
-        <h1>Pokegg Stats</h1>
-      </header>
+    <div className='h-screen flex flex-col justify-start'>
+      <Header />
       <Outlet />
-    </>
+    </div>
   )
 }
