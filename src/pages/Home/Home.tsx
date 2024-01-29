@@ -37,6 +37,7 @@ export const Home = () => {
   );
   const [currentPokemon, setCurrentPokemon] = useState<Pokemon | null>(null);
   const [seenPokemon, setSeenPokemon] = useState<number[]>([]);
+  const [randomPokemons, setRandomPokemons] = useState(true);
 
   useEffect(() => {
     updatePokemon();
@@ -47,21 +48,38 @@ export const Home = () => {
       const pokemon = await getPokemonFromAPI(pokedexNumber);
       setCurrentPokemon(pokemon);
     } else {
-      const pokedexNumber = getNewPokedexNumber();
-      const pokemon = await getPokemonFromAPI(pokedexNumber);
-      setCurrentPokemon(pokemon);
-      setSeenPokemon((prev) => [...prev, pokedexNumber]);
+      const pokedexNumber = getNewPokedexNumber(randomPokemons);
+      if (pokedexNumber != null) {
+        const pokemon = await getPokemonFromAPI(pokedexNumber);
+        setCurrentPokemon(pokemon);
+        setSeenPokemon((prev) => [...prev, pokedexNumber]);
+      }
     }
   };
 
-  const getNewPokedexNumber = () => {
+  const getNewPokedexNumber = (randomPokemons: boolean) => {
     while (true) {
-      const newPokedexNumber = getRandomNumber(
-        currentGeneration.pokedexMin,
-        currentGeneration.pokedexMax
-      );
-      if (!seenPokemon.includes(newPokedexNumber)) {
-        return newPokedexNumber;
+      if (randomPokemons == true) {
+        const newPokedexNumber = getRandomNumber(
+          currentGeneration.pokedexMin,
+          currentGeneration.pokedexMax
+        );
+        if (!seenPokemon.includes(newPokedexNumber)) {
+          return newPokedexNumber;
+        }
+      } else {
+        console.log("hay un problema");
+        if (!currentPokemon?.pokedexNumber) {
+          return; // si no hay pokemon actual, se vuelve con las manos vacias
+        }
+        const newPokedexNumber = currentPokemon?.pokedexNumber + 1;
+        console.log(newPokedexNumber);
+        if (!seenPokemon.includes(newPokedexNumber)) {
+          console.log("no se repite");
+          return newPokedexNumber;
+        } else {
+          return newPokedexNumber;
+        }
       }
     }
   };
@@ -80,7 +98,14 @@ export const Home = () => {
       <NextButton
         icon={<span>{currentGeneration.id}</span>}
         handleClick={async () => {
+          setRandomPokemons(true); // esto es para que cuando quieras agarrar un pokemon de otra generacion, no te siga agarrando el siguiente en la lista
           setCurrentGeneration(GENERATIONS[currentGeneration.id]);
+        }}
+      />
+      <NextButton
+        icon={<span>Random/ No Random</span>}
+        handleClick={() => {
+          setRandomPokemons(!randomPokemons);
         }}
       />
       <PokemonCard pokemon={currentPokemon} />
@@ -100,6 +125,7 @@ export const Home = () => {
               currentPokemon.pokedexNumber
             );
             updatePokemon(seenPokemon.at(currentPosition + 1));
+            console.log(seenPokemon);
           }}
         />
       </div>
