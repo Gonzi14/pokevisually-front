@@ -1,82 +1,67 @@
 import { useEffect, useState } from 'react'
 
-import { GENERATIONS } from '@/shared/constants'
+import { GENERATIONS } from '@shared/constants'
 import { Generation, Pokemon } from '@shared/types'
+import CustomSelect from '@shared/components/CustomSelect'
 import { getRandomNumberBetweenValues } from '@/shared/utils'
 import { getPokemonFromAPI } from '@shared/api/getPokemonFromAPI'
+
+import PokemonCard from './components/PokemonCard'
+import { Button } from '@/shared/ui/button'
 
 export default function RatePage (): JSX.Element {
   const [currentGeneration, setCurrentGeneration] = useState<Generation>(
     GENERATIONS[0]
   )
   const [currentPokemon, setCurrentPokemon] = useState<Pokemon | null>(null)
-  const [seenPokemon, setSeenPokemon] = useState<number[]>([])
 
   useEffect(() => {
-    updatePokemon().catch(e => {})
+    updatePokemon()
   }, [])
 
-  async function updatePokemon (pokedexNumber?: number): Promise<void> {
-    if (pokedexNumber !== undefined) {
-      const pokemon = await getPokemonFromAPI(pokedexNumber)
-      setCurrentPokemon(pokemon)
-    } else {
-      const pokedexNumber = getNewPokedexNumber()
-      const pokemon = await getPokemonFromAPI(pokedexNumber)
-      setCurrentPokemon(pokemon)
-      setSeenPokemon(prev => [...prev, pokedexNumber])
-    }
+  async function updatePokemon (): Promise<void> {
+    const pokedexNumber = getRandomNumberBetweenValues(
+      currentGeneration.pokedexMin,
+      currentGeneration.pokedexMax
+    )
+    const pokemon = await getPokemonFromAPI(pokedexNumber)
+    setCurrentPokemon(pokemon)
   }
-
-  const getNewPokedexNumber = (): number => {
-    while (true) {
-      const newPokedexNumber = getRandomNumberBetweenValues(
-        currentGeneration.pokedexMin,
-        currentGeneration.pokedexMax
-      )
-      if (!seenPokemon.includes(newPokedexNumber)) {
-        return newPokedexNumber
-      }
-    }
-  }
-
-  // const getPreviousSeenPokemon = (): number => {
-  // const currentPosition = seenPokemon.indexOf(currentPokemon.pokedexNumber as number)
-  //   return seenPokemon.at(currentPosition - 1) as number
-  // }
 
   if (currentPokemon == null) {
     return <div>Cargando Contenido...</div>
   }
 
-  return <main>Rate</main>
-
-  // return (
-  //   <div>
-  //     <Button>Button</Button>
-  //     <NextButton
-  //       icon={<span>{currentGeneration.id}</span>}
-  //       handleClick={() => {
-  //         setCurrentGeneration(GENERATIONS[currentGeneration.id])
-  //       }}
-  //     />
-  //     <PokemonCard pokemon={currentPokemon} />
-  //     <div>
-  //       {/* <NextButton
-  //         handleClick={async () => {
-  //           const pokemon = await getPokemonFromAPI(getPreviousSeenPokemon())
-  //           setCurrentPokemon(pokemon)
-  //         }}
-  //       />
-  //       <NextButton
-  //         handleClick={() => {
-  //           const currentPosition = seenPokemon.indexOf(
-  //             currentPokemon.pokedexNumber
-  //           )
-  //           updatePokemon(seenPokemon.at(currentPosition + 1))
-  //         }}
-  //       /> */}
-  //     </div>
-  //   </div>
-  // )
+  return (
+    <main className='h-full flex flex-col justify-start items-center gap-5 lg:gap-12 px-5'>
+      <CustomSelect
+        triggerClassname='self-end mt-5 self-center md:self-end'
+        placeholder='Select a Generation'
+        label='Generations'
+        items={GENERATIONS}
+        onChange={value => {
+          const generation = GENERATIONS.find(gen => gen.id === value)
+          setCurrentGeneration(generation ?? GENERATIONS[0])
+        }}
+        defaultValue={currentGeneration.id}
+      />
+      <div className='flex flex-col lg:flex-row justify-center items-center gap-2'>
+        <Button className='hidden lg:flex text-xl' variant='ghost'>
+          ←
+        </Button>
+        <PokemonCard pokemon={currentPokemon} />
+        <Button className='hidden lg:flex text-xl' variant='ghost'>
+          →
+        </Button>
+      </div>
+      <div className='flex w-full justify-evenly items-center lg:hidden'>
+        <Button variant='ghost' className='text-2xl'>
+          ←
+        </Button>
+        <Button variant='ghost' className='text-2xl'>
+          →
+        </Button>
+      </div>
+    </main>
+  )
 }
