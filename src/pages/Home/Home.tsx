@@ -68,14 +68,11 @@ export const Home = () => {
           return newPokedexNumber;
         }
       } else {
-        console.log("hay un problema");
         if (!currentPokemon?.pokedexNumber) {
           return; // si no hay pokemon actual, se vuelve con las manos vacias
         }
         const newPokedexNumber = currentPokemon?.pokedexNumber + 1;
-        console.log(newPokedexNumber);
         if (!seenPokemon.includes(newPokedexNumber)) {
-          console.log("no se repite");
           return newPokedexNumber;
         } else {
           return newPokedexNumber;
@@ -86,7 +83,11 @@ export const Home = () => {
 
   const getPreviousSeenPokemon = () => {
     const currentPosition = seenPokemon.indexOf(currentPokemon!.pokedexNumber);
-    return seenPokemon.at(currentPosition - 1) as number;
+    if (currentPosition == 0) {
+      return seenPokemon.at(currentPosition) as number;
+    } else {
+      return seenPokemon.at(currentPosition - 1) as number;
+    }
   };
 
   if (!currentPokemon) {
@@ -98,8 +99,9 @@ export const Home = () => {
       <NextButton
         icon={<span>{currentGeneration.id}</span>}
         handleClick={async () => {
-          setRandomPokemons(true); // esto es para que cuando quieras agarrar un pokemon de otra generacion, no te siga agarrando el siguiente en la lista
+          setRandomPokemons(true);
           setCurrentGeneration(GENERATIONS[currentGeneration.id]);
+          updatePokemon();
         }}
       />
       <NextButton
@@ -122,10 +124,16 @@ export const Home = () => {
           icon={<TiArrowRightOutline />}
           handleClick={() => {
             const currentPosition = seenPokemon.indexOf(
-              currentPokemon.pokedexNumber
-            );
-            updatePokemon(seenPokemon.at(currentPosition + 1));
-            console.log(seenPokemon);
+              currentPokemon.pokedexNumber // el problema esta aca, no se deberia de agarrar del
+            ); // numero de la lista, porque entonces vuelve al ciclo de inicio
+            if (
+              currentPokemon.pokedexNumber == currentGeneration.pokedexMax &&
+              randomPokemons == false
+            ) {
+            } else {
+              updatePokemon(seenPokemon.at(currentPosition + 1));
+              console.log(seenPokemon);
+            }
           }}
         />
       </div>
