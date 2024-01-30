@@ -5,10 +5,11 @@ export interface Generation {
 }
 
 export interface Pokemon {
-  pokedexNumber: number
+  id: number
   name: string
-  spriteFront: string
-  spriteBack: string
-  type1: string
-  type2: string
+  frontSprite: string
+  backSprite: string
+  types: Array<{
+    name
+  }>
 }
