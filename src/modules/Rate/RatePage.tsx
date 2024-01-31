@@ -3,29 +3,48 @@ import { useEffect, useState } from 'react'
 import { GENERATIONS } from '@shared/constants'
 import { Generation, Pokemon } from '@shared/types'
 import CustomSelect from '@shared/components/CustomSelect'
-import { getRandomNumberBetweenValues } from '@/shared/utils'
-import { getPokemonFromAPI } from '@/shared/api/getPokemonFromAPI'
+import { getRandomNumberBetweenValues, isPokemonFromGeneration } from '@shared/utils'
+import { getPokemonByPokedexNumber } from '@shared/services/pokemon'
 
 import PokemonCard from './components/PokemonCard'
-import PokemonCardSkeleton from './components/PokemonCardSkeleton'
 import ArrowButton from './components/ArrowButton'
+import PokemonCardSkeleton from './components/PokemonCardSkeleton'
 
 export default function RatePage (): JSX.Element {
-  const [currentGeneration, setCurrentGeneration] = useState<Generation>(
-    GENERATIONS[0]
-  )
   const [seenPokemonIds, setSeenPokemonIds] = useState<number[]>([])
   const [currentPokemon, setCurrentPokemon] = useState<Pokemon | null>(null)
   const [isCurrentPokemonLoading, setIsCurrentPokemonLoading] =
     useState<boolean>(true)
+  const [currentGeneration, setCurrentGeneration] = useState<Generation>(
+    GENERATIONS[0]
+  )
 
   useEffect(() => {
+    let ignore = false
+
     const newPokedexNumber = getNotSeenPokedexNumber()
-    updateCurrentPokemon(newPokedexNumber)
-    updateSeenPokemonIds(newPokedexNumber)
+
+    setIsCurrentPokemonLoading(true)
+    getPokemonByPokedexNumber(newPokedexNumber)
+      .then(pokemon => {
+        if (ignore) return // Implement cleanup due to React's strict mode
+        setCurrentPokemon(pokemon)
+        updateSeenPokemonIds(newPokedexNumber)
+      })
+      .catch(e => e) // TODO: Show error as toast
+      .finally(() => setIsCurrentPokemonLoading(false))
+
+    return () => {
+      ignore = true
+    }
   }, [])
 
   useEffect(() => {
+    // If the current pokemon is null or from the current generation, does not fetch a new one
+    if (
+      currentPokemon == null || isPokemonFromGeneration(currentPokemon.id, currentGeneration)
+    ) { return }
+
     // Restart seen Pokemons and fetch new one
     setSeenPokemonIds([])
     const newPokedexNumber = getNotSeenPokedexNumber()
@@ -52,7 +71,9 @@ export default function RatePage (): JSX.Element {
       seenPokemonIds.length ===
         currentGeneration.pokedexMax - currentGeneration.pokedexMin + 1 &&
       seenPokemonIds.at(-1) === currentPokemon.id
-    ) { return true }
+    ) {
+      return true
+    }
 
     return false
   }
@@ -61,7 +82,7 @@ export default function RatePage (): JSX.Element {
     if (pokedexNumber == null) return
 
     setIsCurrentPokemonLoading(true)
-    getPokemonFromAPI(pokedexNumber)
+    getPokemonByPokedexNumber(pokedexNumber)
       .then(pokemon => {
         setCurrentPokemon(pokemon)
       })
@@ -131,19 +152,37 @@ export default function RatePage (): JSX.Element {
         defaultValue={currentGeneration.id}
       />
       <div className='lg:flex lg:flex-row lg:items-center lg:gap-10'>
-        <ArrowButton arrow='←' disabled={getPreviousPokemonDisabled()} className='hidden lg:flex p-6' onClick={() => goPreviousPokemon()} />
-        {isCurrentPokemonLoading || currentPokemon == null
-          ? (
-            <PokemonCardSkeleton />
-            )
-          : (
-            <PokemonCard pokemon={currentPokemon} />
-            )}
-        <ArrowButton arrow='→' disabled={getNextPokemonDisabled()} className='hidden lg:flex p-6' onClick={() => goNextPokemon()} />
+        <ArrowButton
+          arrow='←'
+          disabled={getPreviousPokemonDisabled()}
+          className='hidden lg:flex p-6'
+          onClick={() => goPreviousPokemon()}
+        />
+        {
+          isCurrentPokemonLoading || currentPokemon == null
+            ? <PokemonCardSkeleton />
+            : <PokemonCard pokemon={currentPokemon} />
+        }
+        <ArrowButton
+          arrow='→'
+          disabled={getNextPokemonDisabled()}
+          className='hidden lg:flex p-6'
+          onClick={() => goNextPokemon()}
+        />
       </div>
       <div className='flex w-full justify-evenly items-center lg:hidden'>
-        <ArrowButton arrow='←' disabled={getPreviousPokemonDisabled()} className='p-8' onClick={() => goPreviousPokemon()} />
-        <ArrowButton arrow='→' disabled={getNextPokemonDisabled()} className='p-8' onClick={() => goNextPokemon()} />
+        <ArrowButton
+          arrow='←'
+          disabled={getPreviousPokemonDisabled()}
+          className='p-8'
+          onClick={() => goPreviousPokemon()}
+        />
+        <ArrowButton
+          arrow='→'
+          disabled={getNextPokemonDisabled()}
+          className='p-8'
+          onClick={() => goNextPokemon()}
+        />
       </div>
     </main>
   )

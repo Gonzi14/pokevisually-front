@@ -1,14 +1,18 @@
 import { Pokemon } from '@/shared/types'
 
-export async function getPokemonFromAPI (index: number): Promise<Pokemon> {
+const API_URL = 'https://pokeapi.co/api/v2/'
+
+export async function getPokemonByPokedexNumber (
+  pokedexNumber: number
+): Promise<Pokemon> {
   try {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${index}`)
+    const res = await fetch(`${API_URL}pokemon/${pokedexNumber}`)
     const resJSON = await res.json()
 
     const { species, sprites, types } = resJSON
 
     return {
-      id: index,
+      id: pokedexNumber,
       name: species.name,
       frontSprite: sprites.front_default,
       backSprite: sprites.back_default,
