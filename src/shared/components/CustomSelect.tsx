@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@ui/select'
-import { cn } from '../utils'
+import { cn } from '@shared/utils'
 
 export default function CustomSelect ({
   placeholder,
